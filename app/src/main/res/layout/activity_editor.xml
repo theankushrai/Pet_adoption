@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_margin="@dimen/activityMargin"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".EditorActivity">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/EditorPetImageView"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@mipmap/ic_launcher"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginBottom="@dimen/itemMargin"
+        app:layout_constraintRight_toRightOf="parent"/>
+    <TextView
+        android:id="@+id/petNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/EditorTExtLaoutHeight"
+        android:textSize="@dimen/defaultTextSize"
+        android:layout_marginBottom="@dimen/itemMargin"
+        android:textColor="@color/black"
+        android:text="Name :"
+        app:layout_constraintTop_toBottomOf="@id/EditorPetImageView"
+        app:layout_constraintLeft_toLeftOf="parent"/>
+    <EditText
+        android:layout_width="wrap_content"
+        android:id="@+id/nameEditTExt"
+        android:inputType="text"
+        android:layout_height="@dimen/EditorTExtLaoutHeight"
+        android:hint="Enter Pet Name Here..."
+        android:layout_marginBottom="@dimen/itemMargin"
+        app:layout_constraintTop_toBottomOf="@id/EditorPetImageView"
+        app:layout_constraintRight_toRightOf="parent"/>
+    <TextView
+        android:id="@+id/genderTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/EditorTExtLaoutHeight"
+        android:textSize="@dimen/defaultTextSize"
+        android:textColor="@color/black"
+        android:text="Gender :"
+        app:layout_constraintTop_toBottomOf="@id/petNameTextView"
+        app:layout_constraintLeft_toLeftOf="parent"/>
+    <Spinner
+        android:id="@+id/genderSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/EditorTExtLaoutHeight"
+        app:layout_constraintTop_toBottomOf="@id/nameEditTExt"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:listitem="ajfdoj"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

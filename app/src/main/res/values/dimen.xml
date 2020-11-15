@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="defaultTextSize">20sp</dimen>
+    <dimen name="activityMargin">10dp</dimen>
+    <dimen name="itemMargin">5dp</dimen>
+    <dimen name="EditorTExtLaoutHeight">50dp</dimen>
+</resources>
