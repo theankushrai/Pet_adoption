@@ -1,22 +1,29 @@
 package com.example.petadoption
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 
 class EditorActivity : AppCompatActivity() {
+    private lateinit var viewModel:PetViewModel
 
     var mGender:Int=0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_editor)
         setUpSpinner()
+
+        viewModel=ViewModelProvider(this,ViewModelProvider.AndroidViewModelFactory.getInstance(application)).get(PetViewModel::class.java)
+        viewModel.allpets.observe(this, Observer {
+
+        })
     }
 
     private fun setUpSpinner() {
@@ -66,5 +73,21 @@ class EditorActivity : AppCompatActivity() {
             R.id.save->return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    fun onSave(item: MenuItem) {
+        val petname:EditText=findViewById(R.id.nameEditTExt)
+        val petGender:Spinner=findViewById(R.id.genderSpinner)
+
+
+        if(petname.text.toString()!=""){
+            viewModel.insert(PetEntity(petname.text.toString(),"ohjiuh",petGender.selectedItem.toString()))
+            val intent=Intent(this,MainActivity::class.java)
+            startActivity(intent)
+        }
+        else {
+            Toast.makeText(this, "Empty name", Toast.LENGTH_SHORT).show()
+
+        }
     }
 }

@@ -17,9 +17,11 @@
         app:layout_constraintRight_toRightOf="parent"
         android:id="@+id/petImageView"/>
     <TextView
+        android:id="@+id/petTextViewMain"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/defaultTextSize"
+        android:layout_marginBottom="@dimen/itemMargin"
         tools:text="JUDO piece of shit"
         app:layout_constraintTop_toBottomOf="@id/petImageView"
         app:layout_constraintRight_toRightOf="parent"
@@ -32,5 +34,14 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_margin="@dimen/itemMargin"
         android:src="@drawable/ic_pet"/>
+    <TextView
+        android:id="@+id/petGenderTextViewMain"
+        android:layout_width="match_parent"
+        android:textSize="@dimen/defaultTextSize"
+        android:layout_height="@dimen/EditorTExtLaoutHeight"
+        app:layout_constraintTop_toBottomOf="@id/petTextViewMain"
+        app:layout_constraintLeft_toLeftOf="parent"
+        tools:text="i am male"
+        app:layout_constraintRight_toRightOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
