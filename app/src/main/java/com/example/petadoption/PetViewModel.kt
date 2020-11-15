@@ -22,5 +22,8 @@ class PetViewModel(application: Application) :AndroidViewModel(application) {
     fun deleteAll()=viewModelScope.launch(Dispatchers.IO) {
         repository.deleteAll()
     }
+    fun delete(petEntity: PetEntity)=viewModelScope.launch(Dispatchers.IO) {
+        repository.delete(petEntity)
+    }
 
 }

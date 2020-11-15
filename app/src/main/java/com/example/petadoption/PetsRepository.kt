@@ -11,4 +11,7 @@ class PetsRepository(private val petDao: PetDao) {
     suspend fun deleteAll(){
         petDao.deleteAll()
     }
+    suspend fun delete(petEntity: PetEntity){
+        petDao.delete(petEntity)
+    }
 }
