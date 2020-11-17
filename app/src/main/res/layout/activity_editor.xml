@@ -9,6 +9,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:id="@+id/EditorPetImageView"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@mipmap/ic_launcher"
@@ -36,6 +37,7 @@
         app:layout_constraintRight_toRightOf="parent"/>
     <TextView
         android:id="@+id/genderTextView"
+        android:layout_marginBottom="@dimen/itemMargin"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/EditorTExtLaoutHeight"
         android:textSize="@dimen/defaultTextSize"
@@ -50,6 +52,53 @@
         app:layout_constraintTop_toBottomOf="@id/nameEditTExt"
         app:layout_constraintRight_toRightOf="parent"
         tools:listitem="ajfdoj"/>
+    <TextView
+        android:id="@+id/breedTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/EditorTExtLaoutHeight"
+        android:layout_marginBottom="@dimen/itemMargin"
+        android:text="Breed :"
+        android:textColor="@color/black"
+        android:textSize="@dimen/defaultTextSize"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/genderTextView"/>
+    <EditText
+        android:id="@+id/breedEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/EditorTExtLaoutHeight"
+        android:layout_marginBottom="@dimen/itemMargin"
+        android:hint="Enter Breed Here..."
+        android:inputType="text"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/genderSpinner"/>
+    <TextView
+    android:id="@+id/weightTextView"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/EditorTExtLaoutHeight"
+    android:layout_marginBottom="@dimen/itemMargin"
+    android:text="Name :"
+    android:textColor="@color/black"
+    android:textSize="@dimen/defaultTextSize"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/breedTextView"/>
+    <EditText
+        android:id="@+id/weightEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/EditorTExtLaoutHeight"
+        android:layout_marginBottom="@dimen/itemMargin"
+        android:hint="Enter Weight Here..."
+        android:inputType="number"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/breedEditText"/>
 
+    <ImageButton
+        android:id="@+id/imageButtonEditor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/design_default_color_primary"
+        android:src="@drawable/ic_baseline_image_search_24"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/weightTextView"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

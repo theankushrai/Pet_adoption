@@ -1,0 +1,324 @@
+Index: app/src/main/java/com/example/petadoption/PetViewModel.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/petadoption/PetViewModel.kt	(revision 5a2528eee83348b2b86a15c358a96a35bd32e895)
++++ app/src/main/java/com/example/petadoption/PetViewModel.kt	(date 1605462029433)
+@@ -22,5 +22,8 @@
+     fun deleteAll()=viewModelScope.launch(Dispatchers.IO) {
+         repository.deleteAll()
+     }
++    fun delete(petEntity: PetEntity)=viewModelScope.launch(Dispatchers.IO) {
++        repository.delete(petEntity)
++    }
+ 
+ }
+\ No newline at end of file
+Index: app/src/main/java/com/example/petadoption/PetsRepository.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/petadoption/PetsRepository.kt	(revision 5a2528eee83348b2b86a15c358a96a35bd32e895)
++++ app/src/main/java/com/example/petadoption/PetsRepository.kt	(date 1605462029425)
+@@ -11,4 +11,7 @@
+     suspend fun deleteAll(){
+         petDao.deleteAll()
+     }
++    suspend fun delete(petEntity: PetEntity){
++        petDao.delete(petEntity)
++    }
+ }
+\ No newline at end of file
+Index: app/src/main/java/com/example/petadoption/MainActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/petadoption/MainActivity.kt	(revision 5a2528eee83348b2b86a15c358a96a35bd32e895)
++++ app/src/main/java/com/example/petadoption/MainActivity.kt	(date 1605462558974)
+@@ -4,17 +4,25 @@
+ import android.os.Bundle
+ import android.view.Menu
+ import android.view.MenuItem
++import android.widget.Toast
+ import androidx.appcompat.app.AppCompatActivity
+ import androidx.lifecycle.Observer
+ import androidx.lifecycle.ViewModelProvider
++import androidx.recyclerview.widget.LinearLayoutManager
++import androidx.recyclerview.widget.RecyclerView
+ import com.google.android.material.floatingactionbutton.FloatingActionButton
+ 
+-class MainActivity : AppCompatActivity() {
++class MainActivity : AppCompatActivity(), PetsRVAdapter {
+     lateinit var viewModel: PetViewModel
+     override fun onCreate(savedInstanceState: Bundle?) {
+         super.onCreate(savedInstanceState)
+         setContentView(R.layout.activity_main)
+ 
++        val recyclerView:RecyclerView=findViewById(R.id.petRecyclerView)
++        recyclerView.layoutManager=LinearLayoutManager(this)
++        val adapter=PetRecyclerViewAdaapter(this,this)
++        recyclerView.adapter=adapter
++
+         //making an intent on floating action button
+         val floatingInsertButton: FloatingActionButton = findViewById(R.id.floatinginsertButton)
+         floatingInsertButton.setOnClickListener {
+@@ -26,8 +34,10 @@
+             this,
+             ViewModelProvider.AndroidViewModelFactory.getInstance(application)
+         ).get(PetViewModel::class.java)
+-        viewModel.allpets.observe(this, Observer {
+-
++        viewModel.allpets.observe(this, Observer {list->
++            list?.let {
++                adapter.onUpdateList(it)
++            }
+         })
+     }
+ 
+@@ -47,6 +57,11 @@
+ 
+     fun onDeleteAll(item: MenuItem) {
+         viewModel.deleteAll()
++        Toast.makeText(this, "Everything Deleted", Toast.LENGTH_SHORT).show()
++    }
++
++    override fun onItemClick(petEntity: PetEntity) {
++        viewModel.delete(petEntity)
+     }
+ }
+ 
+Index: app/src/main/java/com/example/petadoption/PetDao.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/petadoption/PetDao.kt	(revision 5a2528eee83348b2b86a15c358a96a35bd32e895)
++++ app/src/main/java/com/example/petadoption/PetDao.kt	(date 1605462029444)
+@@ -1,10 +1,7 @@
+ package com.example.petadoption
+ 
+ import androidx.lifecycle.LiveData
+-import androidx.room.Dao
+-import androidx.room.Insert
+-import androidx.room.OnConflictStrategy
+-import androidx.room.Query
++import androidx.room.*
+ 
+ @Dao
+ interface PetDao {
+@@ -12,6 +9,9 @@
+     @Insert(onConflict = OnConflictStrategy.IGNORE)
+     suspend fun insert(petEntity: PetEntity)
+ 
++    @Delete
++    suspend fun delete(petEntity: PetEntity)
++
+     @Query("delete from pets_table")
+     suspend fun deleteAll()
+ 
+Index: app/src/main/res/layout/activity_main.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_main.xml	(revision 5a2528eee83348b2b86a15c358a96a35bd32e895)
++++ app/src/main/res/layout/activity_main.xml	(date 1605462474494)
+@@ -7,25 +7,17 @@
+     android:layout_height="match_parent"
+     tools:context=".MainActivity">
+ 
+-    <ImageView
++    <androidx.recyclerview.widget.RecyclerView
+         android:layout_width="match_parent"
+-        android:layout_height="wrap_content"
++        android:layout_height="match_parent"
+         app:layout_constraintTop_toTopOf="parent"
+-        app:layout_constraintLeft_toLeftOf="parent"
+-        tools:src="@mipmap/ic_launcher"
+-        android:layout_marginBottom="@dimen/itemMargin"
+-        app:layout_constraintRight_toRightOf="parent"
+-        android:id="@+id/petImageView"/>
+-    <TextView
+-        android:id="@+id/petTextViewMain"
+-        android:layout_width="match_parent"
+-        android:layout_height="wrap_content"
+-        android:textSize="@dimen/defaultTextSize"
+-        android:layout_marginBottom="@dimen/itemMargin"
+-        tools:text="JUDO piece of shit"
+-        app:layout_constraintTop_toBottomOf="@id/petImageView"
++        tools:listitem="@layout/pet_item"
++        android:fadingEdge="vertical"
++        app:layout_constraintBottom_toBottomOf="parent"
++        android:id="@+id/petRecyclerView"
+         app:layout_constraintRight_toRightOf="parent"
+         app:layout_constraintLeft_toLeftOf="parent"/>
++
+     <com.google.android.material.floatingactionbutton.FloatingActionButton
+         android:layout_width="wrap_content"
+         android:id="@+id/floatinginsertButton"
+@@ -34,14 +26,6 @@
+         app:layout_constraintRight_toRightOf="parent"
+         android:layout_margin="@dimen/itemMargin"
+         android:src="@drawable/ic_pet"/>
+-    <TextView
+-        android:id="@+id/petGenderTextViewMain"
+-        android:layout_width="match_parent"
+-        android:textSize="@dimen/defaultTextSize"
+-        android:layout_height="@dimen/EditorTExtLaoutHeight"
+-        app:layout_constraintTop_toBottomOf="@id/petTextViewMain"
+-        app:layout_constraintLeft_toLeftOf="parent"
+-        tools:text="i am male"
+-        app:layout_constraintRight_toRightOf="parent"/>
++
+ 
+ </androidx.constraintlayout.widget.ConstraintLayout>
+\ No newline at end of file
+Index: app/src/main/res/values/dimen.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values/dimen.xml	(revision 5a2528eee83348b2b86a15c358a96a35bd32e895)
++++ app/src/main/res/values/dimen.xml	(date 1605460111144)
+@@ -3,5 +3,5 @@
+     <dimen name="defaultTextSize">20sp</dimen>
+     <dimen name="activityMargin">10dp</dimen>
+     <dimen name="itemMargin">5dp</dimen>
+-    <dimen name="EditorTExtLaoutHeight">50dp</dimen>
++    <dimen name="EditorTExtLaoutHeight">40dp</dimen>
+ </resources>
+\ No newline at end of file
+Index: app/src/main/res/layout/pet_item.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/pet_item.xml	(date 1605462474476)
++++ app/src/main/res/layout/pet_item.xml	(date 1605462474476)
+@@ -0,0 +1,49 @@
++<?xml version="1.0" encoding="utf-8"?>
++<androidx.constraintlayout.widget.ConstraintLayout
++    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
++    android:layout_height="wrap_content"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    xmlns:tools="http://schemas.android.com/tools"
++    >
++
++    <ImageView
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        app:layout_constraintTop_toTopOf="parent"
++        app:layout_constraintLeft_toLeftOf="parent"
++        tools:src="@mipmap/ic_launcher"
++        android:layout_marginBottom="@dimen/itemMargin"
++        app:layout_constraintRight_toRightOf="parent"
++        android:id="@+id/petImageView"/>
++    <TextView
++        android:id="@+id/petTextViewMain"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:textSize="@dimen/defaultTextSize"
++        android:gravity="bottom"
++        android:layout_marginBottom="@dimen/itemMargin"
++        tools:text="JUDO piece of shit"
++        app:layout_constraintTop_toBottomOf="@id/petImageView"
++        app:layout_constraintRight_toRightOf="parent"
++        app:layout_constraintLeft_toLeftOf="parent"/>
++    <TextView
++        android:id="@+id/petGenderTextViewMain"
++        android:layout_width="match_parent"
++        android:textSize="@dimen/defaultTextSize"
++        android:gravity="center_vertical"
++        android:layout_height="@dimen/EditorTExtLaoutHeight"
++        app:layout_constraintTop_toBottomOf="@id/petTextViewMain"
++        app:layout_constraintLeft_toLeftOf="parent"
++        tools:text="i am male"
++        app:layout_constraintRight_toRightOf="parent"/>
++    <ImageView
++        android:id="@+id/deleteButton"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        app:layout_constraintTop_toTopOf="@id/petTextViewMain"
++        app:layout_constraintBottom_toBottomOf="@id/petTextViewMain"
++        app:layout_constraintRight_toRightOf="@id/petTextViewMain"
++        android:src="@drawable/ic_baseline_cancel_24"
++        android:layout_marginStart="@dimen/activityMargin"/>
++
++</androidx.constraintlayout.widget.ConstraintLayout>
+\ No newline at end of file
+Index: app/src/main/res/drawable/ic_baseline_cancel_24.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/drawable/ic_baseline_cancel_24.xml	(date 1605462179348)
++++ app/src/main/res/drawable/ic_baseline_cancel_24.xml	(date 1605462179348)
+@@ -0,0 +1,10 @@
++<vector xmlns:android="http://schemas.android.com/apk/res/android"
++    android:width="30dp"
++    android:height="30dp"
++    android:viewportWidth="24"
++    android:viewportHeight="24"
++    android:tint="?attr/colorControlNormal">
++  <path
++      android:fillColor="@android:color/white"
++      android:pathData="M12,2C6.47,2 2,6.47 2,12s4.47,10 10,10 10,-4.47 10,-10S17.53,2 12,2zM17,15.59L15.59,17 12,13.41 8.41,17 7,15.59 10.59,12 7,8.41 8.41,7 12,10.59 15.59,7 17,8.41 13.41,12 17,15.59z"/>
++</vector>
+Index: app/src/main/java/com/example/petadoption/PetRecyclerViewAdaapter.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/petadoption/PetRecyclerViewAdaapter.kt	(date 1605461602884)
++++ app/src/main/java/com/example/petadoption/PetRecyclerViewAdaapter.kt	(date 1605461602884)
+@@ -0,0 +1,46 @@
++package com.example.petadoption
++
++import android.content.Context
++import android.view.LayoutInflater
++import android.view.View
++import android.view.ViewGroup
++import android.widget.ImageView
++import android.widget.TextView
++import androidx.recyclerview.widget.RecyclerView
++
++class PetRecyclerViewAdaapter(private val context: Context,val listener:PetsRVAdapter):RecyclerView.Adapter<PetRecyclerViewAdaapter.PetsViewHolder>() {
++
++    private  val allPets=ArrayList<PetEntity>()
++
++    inner class PetsViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
++        val nameTextView:TextView= itemView.findViewById(R.id.petTextViewMain)
++        val genderTextView:TextView=itemView.findViewById(R.id.petGenderTextViewMain)
++        val deleteButton:ImageView=itemView.findViewById(R.id.deleteButton)
++    }
++
++    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PetsViewHolder {
++        val viewHolder=PetsViewHolder(LayoutInflater.from(context).inflate(R.layout.pet_item,parent,false))
++        viewHolder.deleteButton.setOnClickListener{
++            listener.onItemClick(allPets[viewHolder.adapterPosition])
++        }
++        return viewHolder
++    }
++
++    override fun onBindViewHolder(holder: PetsViewHolder, position: Int) {
++        val currentPet=allPets[position]
++        holder.nameTextView.text=currentPet.pname
++        holder.genderTextView.text=currentPet.gender
++    }
++
++    override fun getItemCount(): Int {
++        return allPets.size
++    }
++    fun onUpdateList(petsList:List<PetEntity>){
++        allPets.clear()
++        allPets.addAll(petsList)
++        notifyDataSetChanged()
++    }
++}
++interface PetsRVAdapter{
++    fun onItemClick(petEntity: PetEntity)
++}
+\ No newline at end of file

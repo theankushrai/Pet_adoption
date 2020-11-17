@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -19,6 +20,12 @@ class MainActivity : AppCompatActivity(), PetsRVAdapter {
         setContentView(R.layout.activity_main)
 
         val recyclerView:RecyclerView=findViewById(R.id.petRecyclerView)
+        val itemDecoration=DividerItemDecoration(this,1)
+
+        //Adding item decoration
+        recyclerView.addItemDecoration(itemDecoration)
+
+        //initializing an adapter
         recyclerView.layoutManager=LinearLayoutManager(this)
         val adapter=PetRecyclerViewAdaapter(this,this)
         recyclerView.adapter=adapter

@@ -78,16 +78,31 @@ class EditorActivity : AppCompatActivity() {
     fun onSave(item: MenuItem) {
         val petname:EditText=findViewById(R.id.nameEditTExt)
         val petGender:Spinner=findViewById(R.id.genderSpinner)
+        val petBreed:EditText=findViewById(R.id.breedEditText)
+        val petWeight:EditText=findViewById(R.id.weightEditText)
 
-
-        if(petname.text.toString()!=""){
-            viewModel.insert(PetEntity(petname.text.toString(),"ohjiuh",petGender.selectedItem.toString()))
+//        if(petname.text.toString()!=""){
+//            viewModel.insert(PetEntity(petname.text.toString(),"ohjiuh",petGender.selectedItem.toString()))
+//            val intent=Intent(this,MainActivity::class.java)
+//            startActivity(intent)
+//        }
+//        else {
+//            Toast.makeText(this, "Empty name", Toast.LENGTH_SHORT).show()
+//
+//        }
+        if(petname.text.toString()==""){
+            Toast.makeText(this, "name is empty", Toast.LENGTH_SHORT).show()
+        }
+        else if(petWeight.text.toString()==""){
+            Toast.makeText(this, "Weight is empty", Toast.LENGTH_SHORT).show()
+        }
+        else{
+            viewModel.insert(PetEntity(petname.text.toString(),"ohjiuh",petGender.selectedItem.toString(),petWeight.text.toString()))
             val intent=Intent(this,MainActivity::class.java)
             startActivity(intent)
-        }
-        else {
-            Toast.makeText(this, "Empty name", Toast.LENGTH_SHORT).show()
 
         }
+
+
     }
 }

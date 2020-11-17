@@ -16,6 +16,8 @@ class PetRecyclerViewAdaapter(private val context: Context,val listener:PetsRVAd
         val nameTextView:TextView= itemView.findViewById(R.id.petTextViewMain)
         val genderTextView:TextView=itemView.findViewById(R.id.petGenderTextViewMain)
         val deleteButton:ImageView=itemView.findViewById(R.id.deleteButton)
+        val breedTextView:TextView=itemView.findViewById(R.id.breedTextViewMain)
+        val weightTextView:TextView=itemView.findViewById(R.id.weightTextViewMain)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PetsViewHolder {
@@ -30,6 +32,8 @@ class PetRecyclerViewAdaapter(private val context: Context,val listener:PetsRVAd
         val currentPet=allPets[position]
         holder.nameTextView.text=currentPet.pname
         holder.genderTextView.text=currentPet.gender
+        holder.breedTextView.text=currentPet.breed
+        holder.weightTextView.text=currentPet.weight
     }
 
     override fun getItemCount(): Int {

@@ -2,6 +2,6 @@
 <resources>
     <dimen name="defaultTextSize">20sp</dimen>
     <dimen name="activityMargin">10dp</dimen>
-    <dimen name="itemMargin">5dp</dimen>
+    <dimen name="itemMargin">3dp</dimen>
     <dimen name="EditorTExtLaoutHeight">40dp</dimen>
 </resources>
