@@ -17,6 +17,7 @@ class PetRecyclerViewAdaapter(private val context: Context,val listener:PetsRVAd
         val genderTextView:TextView=itemView.findViewById(R.id.petGenderTextViewMain)
         val deleteButton:ImageView=itemView.findViewById(R.id.deleteButton)
         val breedTextView:TextView=itemView.findViewById(R.id.breedTextViewMain)
+        val petImageView:ImageView=itemView.findViewById(R.id.petImageView)
         val weightTextView:TextView=itemView.findViewById(R.id.weightTextViewMain)
     }
 
@@ -32,6 +33,7 @@ class PetRecyclerViewAdaapter(private val context: Context,val listener:PetsRVAd
         val currentPet=allPets[position]
         holder.nameTextView.text=currentPet.pname
         holder.genderTextView.text=currentPet.gender
+        holder.petImageView.setImageBitmap(currentPet.image)
         holder.breedTextView.text=currentPet.breed
         holder.weightTextView.text=currentPet.weight
     }
